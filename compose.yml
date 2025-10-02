@@ -1,6 +1,6 @@
 services:
   dsm:
-    container_name: dsm
+    container_name: nas
     image: NAS/virtual-NAS
     environment:
       DISK_SIZE: "256G"
