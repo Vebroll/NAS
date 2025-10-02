@@ -10,7 +10,7 @@ set -Eeuo pipefail
 file="/run/shm/dsm.url"
 address="/run/shm/qemu.ip"
 
-[ ! -s  "$file" ] && echo "DSM has not enabled networking yet.." && exit 1
+[ ! -s  "$file" ] && echo "NAS has not enabled networking yet.." && exit 1
 
 location=$(<"$file")
 
@@ -19,13 +19,13 @@ if ! curl -m 20 -ILfSs "http://$location/" > /dev/null; then
   if [[ "$location" == "20.20"* ]]; then
     ip="20.20.20.1"
     port="${location##*:}"
-    echo "Failed to reach DSM at port $port"
+    echo "Failed to reach NAS at port $port"
   else
-    echo "Failed to reach DSM at http://$location"
+    echo "Failed to reach NAS at http://$location"
     ip=$(<"$address")
   fi
 
-  echo "You might need to whitelist IP $ip in the DSM firewall." && exit 1
+  echo "You might need to whitelist IP $ip in the NAS firewall." && exit 1
 
 fi
 
