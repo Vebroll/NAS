@@ -3,13 +3,13 @@ set -Eeuo pipefail
 
 : "${URL:=""}"    # URL of the PAT file to be downloaded.
 
-if [ -f "$STORAGE/dsm.ver" ]; then
-  BASE=$(<"$STORAGE/dsm.ver")
+if [ -f "$STORAGE/nas.ver" ]; then
+  BASE=$(<"$STORAGE/nas.ver")
   BASE="${BASE//[![:print:]]/}"
-  [ -z "$BASE" ] && BASE="DSM_VirtualDSM_69057"
+  [ -z "$BASE" ] && BASE="NAS_01"
 else
   # Fallback for old installs
-  BASE="DSM_VirtualDSM_42962"
+  BASE="NAS_01"
 fi
 
 FN="boot.pat"
@@ -25,7 +25,7 @@ fi
 
 FILE=$(find / -maxdepth 1 -type f -iname "$FN" -print -quit)
 [ ! -s "$FILE" ] && FILE=$(find "$STORAGE" -maxdepth 1 -type f -iname "$FN" -print -quit)
-[ -s "$FILE" ] && BASE="DSM_VirtualDSM" && URL="file://$FILE" 
+[ -s "$FILE" ] && BASE="NAS_VirtualNAS" && URL="file://$FILE" 
 
 if [ -n "$URL" ] && [ ! -s "$FILE" ] && [ ! -d "$DIR" ]; then
   BASE=$(basename "$URL" .pat)
@@ -44,14 +44,14 @@ if [[ -s "$STORAGE/$BASE.boot.img" && -s "$STORAGE/$BASE.system.img" ]]; then
   return 0  # Previous installation found
 fi
 
-html "Please wait while Virtual DSM is being installed..."
+html "Please wait while Virtual NAS is being installed..."
 
 DL=""
-DL_CHINA="https://cndl.synology.cn/download/DSM"
-DL_GLOBAL="https://global.synologydownload.com/download/DSM"
+DL_CHINA="https://nas"
+DL_GLOBAL="https://nas"
 
-[[ "${URL,,}" == *"cndl.synology"* ]] && DL="$DL_CHINA"
-[[ "${URL,,}" == *"global.synology"* ]] && DL="$DL_GLOBAL"
+[[ "${URL,,}" == *"cndl.nas"* ]] && DL="$DL_CHINA"
+[[ "${URL,,}" == *"global.nas"* ]] && DL="$DL_GLOBAL"
 
 if [ -z "$DL" ]; then
   [ -z "$COUNTRY" ] && setCountry
@@ -60,7 +60,7 @@ if [ -z "$DL" ]; then
 fi
 
 if [ -z "$URL" ]; then
-  URL="$DL/release/7.2.2/72806/DSM_VirtualDSM_72806.pat"
+  URL="$DL/nas_01"
 fi
 
 if [ ! -s "$FILE" ]; then
@@ -99,7 +99,7 @@ fi
 if [[ "${FS,,}" != "exfat"* && "${FS,,}" != "ntfs"* && "${FS,,}" != "unknown"* ]]; then
   TMP="$STORAGE/tmp"
 else
-  TMP="/tmp/dsm"
+  TMP="/tmp/nas"
   TMP_SPACE=2147483648
   SPACE=$(df --output=avail -B 1 /tmp | tail -n 1)
   SPACE_MB=$(formatBytes "$SPACE")
@@ -154,9 +154,9 @@ if [[ "$URL" == "file://"* ]]; then
 else
 
   SIZE=0
-  [[ "${URL,,}" == *"_72806.pat" ]] && SIZE=361010261
-  [[ "${URL,,}" == *"_69057.pat" ]] && SIZE=363837333
-  [[ "${URL,,}" == *"_42218.pat" ]] && SIZE=379637760
+  [[ "${URL,,}" == *"_01.pat" ]] && SIZE=361010261
+  [[ "${URL,,}" == *"_01.pat" ]] && SIZE=363837333
+  [[ "${URL,,}" == *"_01.pat" ]] && SIZE=379637760
 
   /run/progress.sh "$PAT" "$SIZE" "$MSG ([P])..." &
 
@@ -288,7 +288,7 @@ fakeroot -- bash -c "set -Eeu;\
   mke2fs -q -t ext4 -b 4096 -d $MOUNT/ -L $LABEL -F -E offset=$OFFSET $SYSTEM $NUMBLOCKS"
 
 rm -rf "$MOUNT"
-echo "$BASE" > "$STORAGE/dsm.ver"
+echo "$BASE" > "$STORAGE/nas.ver"
 
 if [[ "$URL" == "file://$STORAGE/$BASE.pat" ]]; then
   rm -f "$PAT"
@@ -299,7 +299,7 @@ fi
 mv -f "$BOOT" "$STORAGE/$BASE.boot.img"
 rm -rf "$TMP"
 
-html "Booting DSM instance..."
+html "Booting NAS instance..."
 sleep 1.2
 
 return 0
