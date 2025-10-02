@@ -12,7 +12,7 @@
 
 </div></h1>
 
-Virtual DSM in a Docker container.
+Virtual NAS in a Docker container.
 
 ## Features ✨
 
@@ -27,8 +27,8 @@ Virtual DSM in a Docker container.
 ```yaml
 services:
   dsm:
-    container_name: dsm
-    image: vdsm/virtual-dsm
+    container_name: nas
+    image: nas/virtual-nas
     environment:
       DISK_SIZE: "256G"
     devices:
@@ -68,7 +68,7 @@ kubectl apply -f https://raw.githubusercontent.com/vdsm/virtual-dsm/refs/heads/m
   
   - Start the container and connect to [port 5000](http://127.0.0.1:5000/) using your web browser.
 
-  - Wait until DSM finishes its installation
+  - Wait until NAS finishes its installation
  
   - Choose an username and password, and you will be taken to the desktop.
   
@@ -83,7 +83,7 @@ kubectl apply -f https://raw.githubusercontent.com/vdsm/virtual-dsm/refs/heads/m
     - ./dsm:/storage
   ```
 
-  Replace the example path `./dsm` with the desired storage folder or named volume.
+  Replace the example path `./nas` with the desired storage folder or named volume.
  
 ### How do I change the size of the disk?
 
@@ -120,7 +120,7 @@ kubectl apply -f https://raw.githubusercontent.com/vdsm/virtual-dsm/refs/heads/m
     - /dev/sdc1:/disk2
   ```
 
-  Make sure it is totally empty (without any filesystem), otherwise DSM may not format it as a volume.
+  Make sure it is totally empty (without any filesystem), otherwise NAS may not format it as a volume.
 
 ### How do I change the amount of CPU or RAM?
 
@@ -134,16 +134,6 @@ kubectl apply -f https://raw.githubusercontent.com/vdsm/virtual-dsm/refs/heads/m
     CPU_CORES: "4"
   ```
 
-### How do I verify if my system supports KVM?
-
-  First check if your software is compatible using this chart:
-
-  | **Product**  | **Linux** | **Win11** | **Win10** | **macOS** |
-  |---|---|---|---|---|
-  | Docker CLI        | ✅   | ✅       | ❌        | ❌ |
-  | Docker Desktop    | ❌   | ✅       | ❌        | ❌ | 
-  | Podman CLI        | ✅   | ✅       | ❌        | ❌ | 
-  | Podman Desktop    | ✅   | ✅       | ❌        | ❌ | 
 
   After that you can run the following commands in Linux to check your system:
 
@@ -183,7 +173,7 @@ kubectl apply -f https://raw.githubusercontent.com/vdsm/virtual-dsm/refs/heads/m
   ```yaml
   services:
     dsm:
-      container_name: dsm
+      container_name: nas
       ..<snip>..
       networks:
         vdsm:
@@ -228,50 +218,22 @@ kubectl apply -f https://raw.githubusercontent.com/vdsm/virtual-dsm/refs/heads/m
 > [!NOTE]
 > This can be used to enable the facial recognition function in Synology Photos, but does not provide hardware transcoding for video.
 
-### How do I install a specific version of vDSM?
+### How do I install a specific version of NAS?
 
-  By default, version 7.2 will be installed, but if you prefer an older version, you can add the download URL of the `.pat` file to your compose file as follows:
+ not applicable
 
-  ```yaml
-  environment:
-    URL: "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_VirtualDSM_42218.pat"
-  ```
+### What are the differences compared to the standard NAS?
 
-  With this method, it is even possible to switch back and forth between versions while keeping your file data intact.
 
-  Alternatively, you can also skip the download and use a local file instead, by binding it in your compose file in this way:
-  
-  ```yaml
-  volumes:
-    - ./DSM_VirtualDSM_42218.pat:/boot.pat
-  ```
-
-  Replace the example path `./DSM_VirtualDSM_42218.pat` with the filename of your desired `.pat` file. The value of `URL` will be ignored in this case.
-
-### What are the differences compared to the standard DSM?
-
-  There are only two minor differences: the Virtual Machine Manager package is not available, and Surveillance Station will not include any free licenses.
 
 ### Is this project legal?
 
-  Yes, this project contains only open-source code and does not distribute any copyrighted material. Neither does it try to circumvent any copyright protection measures. So under all applicable laws, this project will be considered legal. 
+  Yes, this is similar to other projects but is essentially a wrap around linux, and open source project. This project contains only open-source code and does not distribute any copyrighted material. Neither does it try to circumvent any copyright protection measures. So under all applicable laws, this project will be considered legal. 
   
-  However, by installing Synology's Virtual DSM, you must accept their end-user license agreement, which does not permit installation on non-Synology hardware. So only run this container on an official Synology NAS, as any other use will be a violation of their terms and conditions.
+So only run this container on an official NAS hardware, as any other use will be a violation of their terms and conditions.
 
-## Stars 🌟
-[![Stars](https://starchart.cc/vdsm/virtual-dsm.svg?variant=adaptive)](https://starchart.cc/vdsm/virtual-dsm)
 
 ## Disclaimer ⚖️
 
-*Only run this container on Synology hardware, any other use is not permitted by their EULA. The product names, logos, brands, and other trademarks referred to within this project are the property of their respective trademark holders. This project is not affiliated, sponsored, or endorsed by Synology, Inc.*
+*This is an open source project aimed to create a US based NAS service, this has no affiliation to any company and is solly intended to create new software accessable by everyone with the same security and benefits of other solution in the industry. The product names, logos, brands, and other trademarks referred to within this project are the property of their respective trademark holders. This project is not affiliated, sponsored, or endorsed.*
 
-[build_url]: https://github.com/vdsm/virtual-dsm/
-[hub_url]: https://hub.docker.com/r/vdsm/virtual-dsm
-[tag_url]: https://hub.docker.com/r/vdsm/virtual-dsm/tags
-[pkg_url]: https://github.com/vdsm/virtual-dsm/pkgs/container/virtual-dsm
-
-[Build]: https://github.com/vdsm/virtual-dsm/actions/workflows/build.yml/badge.svg
-[Size]: https://img.shields.io/docker/image-size/vdsm/virtual-dsm/latest?color=066da5&label=size
-[Pulls]: https://img.shields.io/docker/pulls/vdsm/virtual-dsm.svg?style=flat&label=pulls&logo=docker
-[Version]: https://img.shields.io/docker/v/vdsm/virtual-dsm/latest?arch=amd64&sort=semver&color=066da5
-[Package]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fipitio.github.io%2Fbackage%2Fvdsm%2Fvirtual-dsm%2Fvirtual-dsm.json&query=%24.downloads&logo=github&style=flat&color=066da5&label=pulls
